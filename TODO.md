@@ -24,10 +24,26 @@
 
 
 ## Config Generator 
-1. [ ] Read file in .csv
-2. [ ] Extract IP and Hostname
-3. [ ] Create folder with hostname
-4. [ ] Read default fleet config
-5. [ ] Write generated fleet config
-6. [ ] Read default command config
-7. [ ] Write generated command config
+- [ ] Input info needed
+    - [ ] List of names needed
+    - [ ] Fleet IP (TropOS 5ghz)
+    - [ ] Command IP
+    - [ ] Machine name
+    - [ ] Fleet base config
+    - [ ] Command base config
+- [ ] Ouput files needed
+    - [ ] Master list?
+    - [ ] Completed configs status
+        - [ ] Name, failed/OK/skipped ...
+    - [ ] Folder for each machine
+        - [ ] fleet config
+        - [ ] command config
+- [ ] Parse the needed machines list
+- [ ] Read fleet file in .csv
+- [ ] Match the
+- [ ] Extract IP and Hostname
+- [ ] Create folder with hostname
+- [ ] Read default fleet config
+- [ ] Write generated fleet config
+- [ ] Read default command config
+- [ ] Write generated command config
