@@ -26,7 +26,7 @@ def main():
             split_row = row.split(',')
             vehicle = split_row[0]
             command_ip = split_row[1]
-            fleet_ip = split_row[2]
+            fleet_ip = split_row[2].strip()
             fleet_hostname = 'cb-{}-fleet'.format(vehicle)
             command_hostname = 'cb-{}-command'.format(vehicle)
 

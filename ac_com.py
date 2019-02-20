@@ -5,7 +5,7 @@ import os
 
 
 
-def getSettings():
+def settingsExist():
     settings = './settings/settings.txt'
 
     settings_file = Path(settings)
@@ -17,7 +17,28 @@ def getSettings():
         if not os.path.exists('./settings'):
             os.makedirs('./settings')
         return(False)
-    
+
+def getSettings():
+    with open('./settings/settings.txt', 'r') as f:
+        for line in f:
+            stripped = line.strip()
+            com = stripped.split('=')[1]
+        f.close()
+    print('Retrieved {} from settings'.format(com))
+    while True:
+        user_input = input("Is {} correct? (y/n):  ".format(com))
+        if user_input == 'y':
+            return(com)
+        elif user_input == 'n':
+            while True:
+                user_COM = input('Enter COM port number (COMx): ')
+                if user_COM[:3] == 'COM':
+                    saveSettings(user_COM)
+                    return(user_COM)
+                else:
+                    print('Port number must start with COM')
+        else:
+            print("Enter 'y' or 'n'")
 
 
 
@@ -68,14 +89,25 @@ def getCOM():
 
     return(active)
 
+def saveSettings(com):
+    with open('./settings/settings.txt', 'w') as f:
+        settings = 'com={}'.format(com)
+        f.write(settings)
+        f.close()
 
 
-def main():
-    settings_exist = getSettings()
-    if settings_exist:
-        pass
+
+
+def get():
+
+    if settingsExist():
+        com = getSettings()
+        return(com)
     else:
-        active_ports = getCOM()
+        com = getCOM()
+        saveSettings(com)
+        return(com)
+    
 
 
 
@@ -83,4 +115,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    get()
