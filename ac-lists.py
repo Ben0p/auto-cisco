@@ -48,10 +48,7 @@ def main():
         ffi.close()
     ffo.close()
     
-    with open(master_list 'w') as ml:
-        for 
 
-        # need to match command ip name with fleet name and append into master list
 
 
 
