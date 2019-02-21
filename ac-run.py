@@ -27,6 +27,7 @@ def step0():
                         pass
 
         print('No match')
+        return(False)
 
 def step1(com):
     print('Checking status....')
@@ -36,6 +37,8 @@ def step1(com):
     loaded = False
     command = False
     fleet = False
+
+    sw_ver = 'None'
 
     for x in range(3):
         ac_serial.write(ser, b'\r')
@@ -51,20 +54,26 @@ def step1(com):
             print(line)
         else:
             ac_serial.write(ser, b'\r')
+            time.sleep(1)
 
         if line == "ap>":
             autonomous = True
             if upgraded == False:
                 time.sleep(1)
-                ac_serial.write(ser, b'sh ver\r')
+                ac_serial.write(ser, b'sh ver')
+                time.sleep(1)
                 line = ac_serial.read(ser)
                 print(line)
-                line = ac_serial.read(ser)
-                print(line)
-                if line[-42:] == "Version 15.3(3)JI1, RELEASE SOFTWARE (fc1)":
+                time.sleep(2)
+                ac_serial.write(ser, b'\r')
+                sw_ver = ac_serial.read(ser)
+                print('-----')
+                print(sw_ver)
+                print('-----')
+                if sw_ver[-42:] == "Version 15.3(3)JI1, RELEASE SOFTWARE (fc1)":
                     upgraded = True
                     time.sleep(2)
-                elif line[-42:] == "Version 15.3(3)JF5, RELEASE SOFTWARE (fc2)":
+                elif sw_ver[-42:] == "Version 15.3(3)JF5, RELEASE SOFTWARE (fc2)":
                     upgraded = False
                     time.sleep(2)
                     break
@@ -278,6 +287,8 @@ def step3(com):
 
         if line:
             print(line)
+        else:
+            ac_serial.write(ser, b'\r')
 
         if enable == True:
 
@@ -513,6 +524,7 @@ def step7(com, vehicle):
         if line[-8:] == 'command#':
             print("Command config loaded")
             break
+    return(True)
 
 def step8(com):
     print('Step 8')
@@ -639,7 +651,7 @@ def main():
                     print('Upgraded')
                     step5(com)
                 elif command:
-                    step7(com, vehicle)
+                    ping = step8(com)
             elif autonomous and not upgraded:
                 print("Autonomous")
                 print("Not upgraded")
@@ -651,16 +663,23 @@ def main():
                 print("Not autonomous")
                 print("Not upgraded")
                 autonomous, upgraded = step2p5(com)
+                step3(com)
+                print("IP Set")
+                step4(com)
+                upgraded = True
+
             
 
             if vehicle and not configs:
-                configs = step6(com, vehicle)
-                step7(com, vehicle)
+                if not command:
+                    configs = step6(com, vehicle)
+                    command = step7(com, vehicle)
             elif not vehicle and not configs:
                 step4(com)
             elif vehicle and configs:
                 if not command:
-                    step7(com, vehicle)
+                    command = step7(com, vehicle)
+
             
             if command and not ping:
                 ping = step8(com)
@@ -673,10 +692,20 @@ def main():
                 complete = step10(com)
             elif fleet and complete:
                 print('HOLY FUCK made it to the end')
+                print('----------------------------')
+                print('   VEHICLE: {}'.format(vehicle[0]))
+                print('  FLEET IP: {}'.format(vehicle[2]))
+                print('COMMAND IP: {}'.format(vehicle[1]))
+                print('----------------------------')
                 break
 
     elif complete:
         print('HOLY FUCK made it to the end')
+        print('----------------------------')
+        print('   VEHICLE: {}'.format(vehicle[0]))
+        print('  FLEET IP: {}'.format(vehicle[2]))
+        print('COMMAND IP: {}'.format(vehicle[1]))
+        print('----------------------------')
 
 if __name__ == "__main__":
     main()
