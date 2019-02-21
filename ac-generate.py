@@ -27,17 +27,17 @@ def main():
             vehicle = split_row[0]
             command_ip = split_row[1]
             fleet_ip = split_row[2].strip()
-            fleet_hostname = 'cb-{}-fleet'.format(vehicle)
-            command_hostname = 'cb-{}-command'.format(vehicle)
+            fleet_hostname = 'cb-{}-fleet'.format(vehicle.lower())
+            command_hostname = 'cb-{}-command'.format(vehicle.lower())
 
             # Folder
             folder_out = './configs/folders/{}'.format(vehicle)
 
             # Files
-            fleet_file = '{}/cb-{}-fleet.txt'.format(folder_out, vehicle)
-            command_file = '{}/cb-{}-command.txt'.format(folder_out, vehicle)
-            fleet_all = './configs/all/cb-{}-fleet.txt'.format(vehicle)
-            command_all = './configs/all/cb-{}-command.txt'.format(vehicle)
+            fleet_file = '{}/cb-{}-fleet.txt'.format(folder_out, vehicle.lower())
+            command_file = '{}/cb-{}-command.txt'.format(folder_out, vehicle.lower())
+            fleet_all = './configs/all/cb-{}-fleet.txt'.format(vehicle.lower())
+            command_all = './configs/all/cb-{}-command.txt'.format(vehicle.lower())
 
             # Generate configs
             new_fleet = fleet_config.format(hostname=fleet_hostname, ip=fleet_ip)
