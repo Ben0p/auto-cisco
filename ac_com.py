@@ -25,20 +25,7 @@ def getSettings():
             com = stripped.split('=')[1]
         f.close()
     print('Retrieved {} from settings'.format(com))
-    while True:
-        user_input = input("Is {} correct? (y/n):  ".format(com))
-        if user_input == 'y':
-            return(com)
-        elif user_input == 'n':
-            while True:
-                user_COM = input('Enter COM port number (COMx): ')
-                if user_COM[:3] == 'COM':
-                    saveSettings(user_COM)
-                    return(user_COM)
-                else:
-                    print('Port number must start with COM')
-        else:
-            print("Enter 'y' or 'n'")
+    return(com)
 
 
 

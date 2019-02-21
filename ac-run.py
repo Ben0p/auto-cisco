@@ -7,13 +7,35 @@ import time
 Main auto-cisco run file
 '''
 #
+
+def step0():
+    
+    name = input("Enter vehicle name (DT201): ")
+    with open('./lists/master.csv', 'r') as f:
+        for line in f:
+            stripped = line.strip()
+            split = stripped.split(',')
+            if split[0] == name:
+                while True:
+                    user_input = input('Matched {}\nFleet IP {}\nCommand IP {}\nIs this correct? (y/n)'.format(split[0],split[2],split[1]))
+                    if user_input == 'y':
+                        print('!!! Power up IW3702 now !!!')
+                        return(split)
+                    elif user_input == 'n':
+                        pass
+                    else:
+                        pass
+
+        print('No match')
+
 def step1(com):
-    print('Step 1')
+    print('Checking status....')
     ser = ac_serial.initSerial(com)
 
     upgraded = False
     loaded = False
     command = False
+    fleet = False
 
     for x in range(3):
         ac_serial.write(ser, b'\r')
@@ -41,6 +63,7 @@ def step1(com):
                 print(line)
                 if line[-42:] == "Version 15.3(3)JI1, RELEASE SOFTWARE (fc1)":
                     upgraded = True
+                    time.sleep(2)
                 elif line[-42:] == "Version 15.3(3)JF5, RELEASE SOFTWARE (fc2)":
                     upgraded = False
                     time.sleep(2)
@@ -65,11 +88,14 @@ def step1(com):
         if len(line) == 17 and line[:2] == 'AP':
             autonomous = False
             upgraded = False
+            command = False
+            fleet = False
             break
         elif line[-8:] == 'command#':
             autonomous = True
             upgraded = True
             command = True
+            fleet = False
             break
         elif line[-6:] == 'fleet#':
             autonomous = True
@@ -131,6 +157,7 @@ def step2p5(com):
     logged_in = False
     enable = False
     debug = False
+    finished_boot = False
 
     for x in range(3):
         ac_serial.write(ser, b'\r')
@@ -177,8 +204,14 @@ def step2p5(com):
             
             else:
                 if len(line) == 17 and line[:2] == 'AP':
+                    time.sleep(1)
                     ac_serial.write(ser, b'en')
+                    line = ac_serial.read(ser)
+                    print(line)
+                    time.sleep(1)
                     ac_serial.write(ser, b'\n')
+                    line = ac_serial.read(ser)
+                    print(line)
                     time.sleep(1)
 
                 if line[:9] == 'Password:':
@@ -190,32 +223,39 @@ def step2p5(com):
 
 
         else:
-            if len(line) == 17 and line[:2] == 'AP':
-                time.sleep(1)
-                ac_serial.write(ser, b'login')
-                line = ac_serial.read(ser)
-                print(line)
-                time.sleep(1)
-                ac_serial.write(ser, b'\r')
-                line = ac_serial.read(ser)
-                print(line)
-                time.sleep(3)
-                line = ac_serial.read(ser)
-                print(line)
-            if line[:9] == 'Username:':
-                ac_serial.write(ser, b'cisco\r')
-                line = ac_serial.read(ser)
-                print(line)
-                time.sleep(3)
-            if line[:9] == 'Password:':
-                ac_serial.write(ser, b'Cisco')
-                time.sleep(3)
-                line = ac_serial.read(ser)
-                print(line)
-                ac_serial.write(ser, b'\r')
-                line = ac_serial.read(ser)
-                print(line)   
-                logged_in = True
+            if finished_boot:
+                if len(line) == 17 and line[:2] == 'AP':
+                    time.sleep(1)
+                    ac_serial.write(ser, b'login')
+                    line = ac_serial.read(ser)
+                    print(line)
+                    time.sleep(1)
+                    ac_serial.write(ser, b'\r')
+                    line = ac_serial.read(ser)
+                    print(line)
+                    time.sleep(3)
+                    line = ac_serial.read(ser)
+                    print(line)
+                if line[:9] == 'Username:':
+                    ac_serial.write(ser, b'cisco\r')
+                    line = ac_serial.read(ser)
+                    print(line)
+                    time.sleep(3)
+                if line[:9] == 'Password:':
+                    ac_serial.write(ser, b'Cisco')
+                    time.sleep(3)
+                    line = ac_serial.read(ser)
+                    print(line)
+                    ac_serial.write(ser, b'\r')
+                    line = ac_serial.read(ser)
+                    print(line)   
+                    logged_in = True
+            else:
+                print("Waiting for the bootup to complete...")
+                if line[-25:] == 'Invoking capwap discovery':
+                    finished_boot = True
+                elif line[:2] == 'AP':
+                    finished_boot = True
 
     return(True, False)
 
@@ -327,25 +367,34 @@ def step4(com):
             ac_serial.write(ser, b'\r')
         
 
-def step5():
+def step5(com):
     print('Step 5')
-    
-    name = input("Enter vehicle name (DT201): ")
-    with open('./lists/master.csv', 'r') as f:
-        for line in f:
-            stripped = line.strip()
-            split = stripped.split(',')
-            if split[0] == name:
-                while True:
-                    user_input = input('Matched {}\nFleet IP {}\nCommand IP {}\nIs this correct? (y/n)'.format(split[0],split[2],split[1]))
-                    if user_input == 'y':
-                        return(split)
-                    elif user_input == 'n':
-                        pass
-                    else:
-                        pass
+    ser = ac_serial.initSerial(com)
 
-        print('No match')
+
+    for x in range(3):
+        ac_serial.write(ser, b'\r')
+
+    while True:
+        try:
+            line = ac_serial.read(ser)
+        except:
+            pass
+
+        if line:
+            print(line)
+        
+        if line == 'ap>':
+            ac_serial.write(ser, b'en')
+            ac_serial.write(ser, b'\n')
+            time.sleep(1)
+        if line[:9] == 'Password:':
+            time.sleep(1)
+            ac_serial.write(ser, b'Cisco')
+            time.sleep(0.5)
+            ac_serial.write(ser, b'\n')
+        if line == 'ap#':
+            break
 
 
 def step6(com, vehicle):
@@ -384,15 +433,15 @@ def step6(com, vehicle):
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
-                time.sleep(1)
+                time.sleep(3)
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
-                time.sleep(1)
+                time.sleep(2)
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
-                time.sleep(1)
+                time.sleep(2)
                 fleet_copy = True
         
             if not command_copy:
@@ -407,11 +456,11 @@ def step6(com, vehicle):
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
-                time.sleep(1)
+                time.sleep(3)
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
-                time.sleep(1)
+                time.sleep(2)
                 ac_serial.write(ser, b'\r')
                 line = ac_serial.read(ser)
                 print(line)
@@ -563,6 +612,7 @@ def step10(com):
 
 def main():
     print("WARNING: This script is SUPER buggy, always verify after use")
+    time.sleep(3)
     com = ac_com.get()
     configs = False
     vehicle = False
@@ -570,54 +620,60 @@ def main():
     fleet = False
     complete = False
 
-    vehicle = step5()
+    vehicle = step0()
     autonomous, upgraded, command, fleet = step1(com)
 
     if not complete:
-        if command and not fleet:
-            configs = True
-            ping = step8(com)
-        elif fleet and command:
-            configs = True
-            ping = True
-            complete = step10(com)
-
-        elif autonomous and upgraded:
-            print('In autonomous')
-            print('Upgraded')
-            vehicle = step5()
-        elif autonomous and not upgraded:
-            print("Autonomous")
-            print("Not upgraded")
-            step3(com)
-            print("IP Set")
-            step4(com)
-        else:
-            print("Not autonomous")
-            print("Not upgraded")
-            autonomous, upgraded = step2p5(com)
-        
-
-        if vehicle and not configs:
-            configs = step6(com, vehicle)
-            step7(com, vehicle)
-        elif not vehicle and not configs:
-            step4(com)
-        elif vehicle and configs:
-            if not command:
-                step7(com, vehicle)
-        
-        if command and not ping:
-            ping = step8(com)
-        elif command and ping:
-            if not fleet and not complete:
-                fleet = step9(com, vehicle)
+        while True:
+            if command and not fleet:
+                configs = True
+                ping = step8(com)
+            elif fleet and command:
+                configs = True
+                ping = True
                 complete = step10(com)
-        
-        if fleet and not complete:
-            complete = step10(com)
-        elif fleet and complete:
-            print('HOLY FUCK made it to the end')
+
+            elif autonomous and upgraded:
+                if not command:
+                    print('In autonomous')
+                    print('Upgraded')
+                    step5(com)
+                elif command:
+                    step7(com, vehicle)
+            elif autonomous and not upgraded:
+                print("Autonomous")
+                print("Not upgraded")
+                step3(com)
+                print("IP Set")
+                step4(com)
+                upgraded = True
+            elif not autonomous and not upgraded:
+                print("Not autonomous")
+                print("Not upgraded")
+                autonomous, upgraded = step2p5(com)
+            
+
+            if vehicle and not configs:
+                configs = step6(com, vehicle)
+                step7(com, vehicle)
+            elif not vehicle and not configs:
+                step4(com)
+            elif vehicle and configs:
+                if not command:
+                    step7(com, vehicle)
+            
+            if command and not ping:
+                ping = step8(com)
+            elif command and ping:
+                if not fleet and not complete:
+                    fleet = step9(com, vehicle)
+                    complete = step10(com)
+            
+            if fleet and not complete:
+                complete = step10(com)
+            elif fleet and complete:
+                print('HOLY FUCK made it to the end')
+                break
 
     elif complete:
         print('HOLY FUCK made it to the end')
