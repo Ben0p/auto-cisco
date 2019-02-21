@@ -31,7 +31,13 @@ def step0():
 
 def step1(com):
     print('Checking status....')
-    ser = ac_serial.initSerial(com)
+    while True:
+        try:
+            ser = ac_serial.initSerial(com)
+            break
+        except serial.serialutil.SerialException:
+            input("Serial port in use, close putty.")
+
 
     upgraded = False
     loaded = False
@@ -671,7 +677,8 @@ def main():
             
 
             if vehicle and not configs:
-                if not command:
+                elif not command and not configs:
+                    step5(com)
                     configs = step6(com, vehicle)
                     command = step7(com, vehicle)
             elif not vehicle and not configs:
