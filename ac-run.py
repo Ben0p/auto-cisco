@@ -10,24 +10,24 @@ Main auto-cisco run file
 
 def step0():
     
-    name = input("Enter vehicle name (DT201): ")
-    with open('./lists/master.csv', 'r') as f:
-        for line in f:
-            stripped = line.strip()
-            split = stripped.split(',')
-            if split[0] == name:
-                while True:
-                    user_input = input('Matched {}\nFleet IP {}\nCommand IP {}\nIs this correct? (y/n)'.format(split[0],split[2],split[1]))
-                    if user_input == 'y':
-                        print('!!! Power up IW3702 now !!!')
-                        return(split)
-                    elif user_input == 'n':
-                        pass
-                    else:
-                        pass
+        while True:
+            name = input("Enter vehicle name (DT201): ")
+            with open('./lists/master.csv', 'r') as f:
+                for line in f:
+                    stripped = line.strip()
+                    split = stripped.split(',')
+                    if split[0] == name:
+                        user_input = input('Matched {}\nFleet IP {}\nCommand IP {}\nIs this correct? (y/n)'.format(split[0],split[2],split[1]))
+                        if user_input == 'y':
+                            print('!!! Power up IW3702 now !!!')
+                            return(split)
+                        elif user_input == 'n':
+                            print("Try again...")
+                            continue
+                        else:
+                            pass
+            print("No Match")
 
-        print('No match')
-        return(False)
 
 def step1(com):
     print('Checking status....')
@@ -677,7 +677,7 @@ def main():
             
 
             if vehicle and not configs:
-                elif not command and not configs:
+                if not command and not configs:
                     step5(com)
                     configs = step6(com, vehicle)
                     command = step7(com, vehicle)
