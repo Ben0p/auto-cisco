@@ -1,5 +1,5 @@
-from steps import *
-from commands import *
+from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version
+from commands import close, com, credentials, initialize, match, read, write
 
 
 

@@ -1,6 +1,5 @@
 import time
-from commands import *
-
+from commands import close, com, credentials, initialize, match, read, write
 
 
 def check(console):
