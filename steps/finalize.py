@@ -1,6 +1,23 @@
 import time
+import random
 from commands import *
 
+
+names = [
+    'Silv',
+    'Ben0',
+    'bhebhe',
+    'Kyle',
+    'Grant',
+    'John',
+    'Rupert',
+    'Dan',
+    'Doggy',
+    'Glen',
+    'Paul',
+    'Craig',
+    'Roy',
+    ]
 
 
 def finish(console, vehicle):
@@ -43,7 +60,8 @@ def finish(console, vehicle):
         print('  FLEET IP:     {}'.format(vehicle[2]))
         print('--------------------------------------')
         print('')
-        input('Read for another round? [ENTER]')
+        print('Milkshakes are on {}'.format(random.choice(names)))
+        input('Ready for another round? [ENTER]')
 
     elif configured_name.upper() != vehicle[0]:
         print('Configured hostname DOES NOT match specified vehicle [FAIL]')

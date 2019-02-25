@@ -20,6 +20,7 @@ def open(com_port):
 
         except:
             print("Incorrect serial port, or port is in use.")
+            print("Is putty open?")
             input("Press ENTER to try again...")
     
 def port():
