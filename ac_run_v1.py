@@ -629,90 +629,94 @@ def step10(com):
 
 
 def main():
-    print("WARNING: This script is SUPER buggy, always verify after use")
-    time.sleep(3)
-    com = ac_com.get()
-    configs = False
-    vehicle = False
-    ping = False
-    fleet = False
-    complete = False
+    while True:
+        print("WARNING: This script is SUPER buggy, always verify after use")
+        time.sleep(3)
+        com = ac_com.get()
+        configs = False
+        vehicle = False
+        ping = False
+        fleet = False
+        complete = False
 
-    vehicle = step0()
-    autonomous, upgraded, command, fleet = step1(com)
+        vehicle = step0()
+        autonomous, upgraded, command, fleet = step1(com)
 
-    if not complete:
         while True:
-            if command and not fleet:
-                configs = True
-                ping = step8(com)
-            elif fleet and command:
-                configs = True
-                ping = True
-                complete = step10(com)
-
-            elif autonomous and upgraded:
-                if not command:
-                    print('In autonomous')
-                    print('Upgraded')
-                    step5(com)
-                elif command:
+            if not complete:
+                if command and not fleet:
+                    configs = True
                     ping = step8(com)
-            elif autonomous and not upgraded:
-                print("Autonomous")
-                print("Not upgraded")
-                step3(com)
-                print("IP Set")
-                step4(com)
-                upgraded = True
-            elif not autonomous and not upgraded:
-                print("Not autonomous")
-                print("Not upgraded")
-                autonomous, upgraded = step2p5(com)
-                step3(com)
-                print("IP Set")
-                step4(com)
-                upgraded = True
-
-            
-
-            if vehicle and not configs:
-                if not command and not configs:
-                    step5(com)
-                    configs = step6(com, vehicle)
-                    command = step7(com, vehicle)
-            elif not vehicle and not configs:
-                step4(com)
-            elif vehicle and configs:
-                if not command:
-                    command = step7(com, vehicle)
-
-            
-            if command and not ping:
-                ping = step8(com)
-            elif command and ping:
-                if not fleet and not complete:
-                    fleet = step9(com, vehicle)
+                elif fleet and command:
+                    configs = True
+                    ping = True
                     complete = step10(com)
-            
-            if fleet and not complete:
-                complete = step10(com)
-            elif fleet and complete:
-                print('HOLY FUCK made it to the end')
+
+                elif autonomous and upgraded:
+                    if not command:
+                        print('In autonomous')
+                        print('Upgraded')
+                        step5(com)
+                    elif command:
+                        ping = step8(com)
+                elif autonomous and not upgraded:
+                    print("Autonomous")
+                    print("Not upgraded")
+                    step3(com)
+                    print("IP Set")
+                    step4(com)
+                    upgraded = True
+                elif not autonomous and not upgraded:
+                    print("Not autonomous")
+                    print("Not upgraded")
+                    autonomous, upgraded = step2p5(com)
+                    step3(com)
+                    print("IP Set")
+                    step4(com)
+                    upgraded = True
+
+                
+
+                if vehicle and not configs:
+                    if not command and not configs:
+                        step5(com)
+                        configs = step6(com, vehicle)
+                        command = step7(com, vehicle)
+                elif not vehicle and not configs:
+                    step4(com)
+                elif vehicle and configs:
+                    if not command:
+                        command = step7(com, vehicle)
+
+                
+                if command and not ping:
+                    ping = step8(com)
+                elif command and ping:
+                    if not fleet and not complete:
+                        fleet = step9(com, vehicle)
+                        complete = step10(com)
+                
+                if fleet and not complete:
+                    complete = step10(com)
+                elif fleet and complete:
+                    print('HOLY FUCK made it to the end')
+                    print('----------------------------')
+                    print('   VEHICLE: {}'.format(vehicle[0]))
+                    print('  FLEET IP: {}'.format(vehicle[2]))
+                    print('COMMAND IP: {}'.format(vehicle[1]))
+                    print('----------------------------')
+                    input('Press ENTER to start again...')
+                    break
+
+            elif complete:
+                print('Already Completed')
                 print('----------------------------')
                 print('   VEHICLE: {}'.format(vehicle[0]))
                 print('  FLEET IP: {}'.format(vehicle[2]))
                 print('COMMAND IP: {}'.format(vehicle[1]))
                 print('----------------------------')
+                input('Press ENTER to start again...')
                 break
-
-    elif complete:
-        print('HOLY FUCK made it to the end')
-        print('----------------------------')
-        print('   VEHICLE: {}'.format(vehicle[0]))
-        print('  FLEET IP: {}'.format(vehicle[2]))
-        print('COMMAND IP: {}'.format(vehicle[1]))
-        print('----------------------------')
 
 if __name__ == "__main__":
     main()

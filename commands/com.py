@@ -10,7 +10,6 @@ def settingsExist():
 
     settings_file = Path(settings)
     if settings_file.is_file():
-        print("Found existing settings")
         return(True)
     else:
         print("No existing settings found")
