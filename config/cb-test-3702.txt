@@ -1,0 +1,203 @@
+
+!
+! Last configuration change at 10:20:00 WST Mon Mar 1 1993 by cbminesys
+version 15.3
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+!
+hostname cb-test-3702
+!
+!
+logging buffered warnings
+logging rate-limit console 9
+no logging console
+enable secret 5 $1$2EdN$tzZ7WJ.7YEZ9rnsyL.L.K.
+!
+aaa new-model
+!
+!
+aaa group server radius FMGOPS_RADIUS
+ server 10.249.203.19 auth-port 1812 acct-port 1813
+!
+aaa authentication login LOCAL_AUTH local-case
+aaa authentication login FMGOPS_AUTHENTICATION group FMGOPS_RADIUS local-case
+aaa authorization exec FMGOPS_AUTHORIZATION group FMGOPS_RADIUS if-authenticated 
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone WST 8 0
+no ip source-route
+no ip igmp snooping
+no ip cef
+no ip domain lookup
+ip domain name fmgops.local
+!
+!
+!
+!
+dot11 pause-time 100
+dot11 syslog
+!
+dot11 ssid cbmining
+   authentication open 
+   authentication key-management wpa version 2
+   wpa-psk ascii 7 09611A02100B1031272E03387365
+   no ids mfp client
+!
+!
+!
+!
+no ipv6 cef
+!
+crypto pki trustpoint TP-self-signed-1931435848
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1931435848
+ revocation-check none
+ rsakeypair TP-self-signed-1931435848
+!
+!
+crypto pki certificate chain TP-self-signed-1931435848
+!
+username cbminesys secret 5 $1$ajxr$clSMrWQO4xPshUb/iH2071
+!
+!
+bridge irb
+!
+!
+!
+interface Dot11Radio0
+ description Wireless Interface to SSID:cbmining
+ no ip address
+ no ip route-cache
+ load-interval 30
+ no shutdown
+ !
+ encryption mode ciphers aes-ccm 
+ !
+ ssid cbmining
+ !
+ antenna gain 3
+ antenna ab-antenna
+ stbc
+ guard-interval long
+ speed  basic-6.0 9.0 12.0 18.0
+ packet retries 32
+ station-role workgroup-bridge
+ rts retries 20
+ distance 3
+ mobile station scan 2412 2437 2462
+ mobile station minimum-rate 6.0 
+ mobile station period 2 threshold 77
+ beacon dtim-period 1
+ infrastructure-client
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+!
+interface Dot11Radio1
+ no ip address
+ shutdown
+ antenna gain 0
+ peakdetect
+ no dfs band block
+ channel dfs
+ station-role scanner
+ bridge-group 1
+ bridge-group 1 subscriber-loop-control
+ bridge-group 1 spanning-disabled
+ bridge-group 1 block-unknown-source
+ no bridge-group 1 source-learning
+ no bridge-group 1 unicast-flooding
+!
+interface GigabitEthernet0
+ no ip address
+ duplex full
+ speed 10
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+!
+interface GigabitEthernet1
+ no ip address
+ duplex auto
+ speed auto
+ bridge-group 1
+ bridge-group 1 spanning-disabled
+!
+interface BVI1
+ ip address 10.11.12.13 255.255.240.0
+ no ip unreachables
+ ipv6 address dhcp
+ ipv6 address autoconfig
+ ipv6 enable
+!
+ip default-gateway 10.221.64.1
+ip forward-protocol nd
+no ip http server
+ip http access-class 5
+ip http authentication aaa login-authentication FMGOPS_AUTHENTICATION
+ip http authentication aaa exec-authorization FMGOPS_AUTHORIZATION
+ip http secure-server
+ip http help-path http://www.cisco.com/warp/public/779/smbiz/prodconfig/help/eag
+ip radius source-interface BVI1 
+!
+logging trap notifications
+logging host 10.204.243.13
+!
+snmp-server group SNMP_USER_RO v3 priv 
+snmp-server group SNMP_GROUP_RO v3 priv read SNMP3VIEW access 5
+snmp-server view SNMPv3View iso included
+snmp-server view SNMPv3View mib-2 included
+snmp-server view SNMPv3View system included
+snmp-server view SNMPv3View cisco included
+snmp-server community ENMSe2e2006 RO
+snmp-server host 10.204.243.13 version 3 priv SNMP_USER_RO 
+snmp-server host 10.204.99.2 version 3 priv SNMP_USER_RO 
+snmp-server host 10.204.99.7 version 3 priv SNMP_USER_RO 
+snmp-server host 10.252.244.61 version 3 priv SNMP_USER_RO 
+radius-server host 10.249.203.19 auth-port 1812 acct-port 1813 key 7 151F1F2B0C38003E3C1D6D761E414054035F56
+!
+radius server CLBOPSNPS01
+ address ipv4 10.249.203.19 auth-port 1645 acct-port 1813
+ key 7 151F1F2B0C38003E3C1D6D761E414054035F56
+!
+access-list 5 permit 10.252.244.15
+access-list 5 permit 10.221.244.10
+access-list 5 permit 10.204.243.13
+access-list 5 permit 10.252.244.61
+access-list 5 permit 10.221.64.0 0.0.15.255
+access-list 5 permit 10.249.98.0 0.0.0.255
+access-list 5 permit 10.221.99.0 0.0.0.255
+bridge 1 route ip
+!
+!
+!
+line con 0
+ exec-timeout 20 0
+ login authentication LOCAL_AUTH
+ stopbits 1
+line vty 0 4
+ access-class 5 in
+ exec-timeout 20 0
+ authorization exec FMGOPS_AUTHORIZATION
+ login authentication FMGOPS_AUTHENTICATION
+ transport input ssh
+line vty 5 15
+ access-class 5 in
+ exec-timeout 20 0
+ authorization exec FMGOPS_AUTHORIZATION
+ login authentication FMGOPS_AUTHENTICATION
+ transport input ssh
+!
+sntp server 10.221.64.5
+workgroup-bridge timeouts eap-timeout 2
+workgroup-bridge timeouts iapp-refresh 100
+workgroup-bridge timeouts auth-response 800
+workgroup-bridge timeouts assoc-response 800
+workgroup-bridge timeouts client-add 800
+end

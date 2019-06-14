@@ -6,7 +6,7 @@ import time
 '''
 Main auto-cisco run file
 '''
-#
+# THIS IS THE OLD SPAGHETTI CODE
 
 def step0():
     

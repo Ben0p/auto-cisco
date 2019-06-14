@@ -3,9 +3,8 @@ import time
 
 '''
 Generates folders and config files for each device in lists
+Not a part of the main auto configurator, run this manually
 '''
-
-
 
 
 

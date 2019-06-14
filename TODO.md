@@ -1,6 +1,7 @@
 # Auto Cisco TODO
 
-## Overview
+## General
+- [ ] No longer need fleet config
 - [ ] File in (.csv) with hostname and IP
 - [ ] Folders for each device
     - [ ] details .csv
@@ -47,3 +48,7 @@
 - [ ] Write generated fleet config
 - [ ] Read default command config
 - [ ] Write generated command config
+- [ ] Prompt to change com port if it fails
+
+## Config management server
+- [ ] Server to manage configs and programing dates / times
