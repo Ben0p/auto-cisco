@@ -3,6 +3,7 @@ import time
 from commands import com
 
 def open(com_port):
+    print("!!! Ensure WGB is plugged in and turned on !!!")
     print("Initializing {}...".format(com_port))
 
     while True:

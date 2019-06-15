@@ -2,30 +2,17 @@
 import serial
 from pathlib import Path
 import os
+from steps import parameters
 
 
-
-def settingsExist():
-    settings = './settings/settings.txt'
-
-    settings_file = Path(settings)
-    if settings_file.is_file():
-        return(True)
-    else:
-        print("No existing settings found")
-        if not os.path.exists('./settings'):
-            os.makedirs('./settings')
-        return(False)
 
 def getSettings():
-    with open('./settings/settings.txt', 'r') as f:
-        for line in f:
-            stripped = line.strip()
-            com = stripped.split('=')[1]
-        f.close()
-    print('Retrieved {} from settings'.format(com))
-    return(com)
-
+    settings = parameters.get()
+    com = settings['com']
+    if com:
+        return(com)
+    else:
+        return(False)
 
 
 def getCOM():
@@ -75,23 +62,17 @@ def getCOM():
 
     return(active)
 
-def saveSettings(com):
-    with open('./settings/settings.txt', 'w') as f:
-        settings = 'com={}'.format(com)
-        f.write(settings)
-        f.close()
-
 
 
 
 def get():
 
-    if settingsExist():
-        com = getSettings()
+    com = getSettings()
+    if com:
         return(com)
     else:
         com = getCOM()
-        saveSettings(com)
+        parameters.update('com', com)
         return(com)
     
 

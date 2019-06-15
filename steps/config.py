@@ -1,13 +1,13 @@
 import os
 import time
-import settings
+from steps import parameters
 
 '''
-Generates folders and config files for each device in lists
+Generates a config from a template specified in settings.txt
 '''
 
 def check():
-    params = settings.get()
+    params = parameters.get()
     template = params['template']
 
     if not os.path.isdir("config"):
@@ -24,17 +24,25 @@ def check():
             print("{} not found, copy template file there or change config to suit".format(template))
             input("Press ENTER to continue...")
         else:
-            return(True, params)
+            return(params)
     
 
 
-def generate(name, ip):
-    exists, params = check()
-    if exists:
+def generate(vehicle):
+    params = check()
+    name = vehicle[0].lower()
+    ip = vehicle[1]
+    if params:
         hostname = '{}{}{}'.format(params['prefix'], name, params['suffix'])
-        with open(params['template']) as f:
-            blank_config = f.read()
-            new_config = blank_config.format(hostname=hostname, ip=ip)
+        while True:
+            try:
+                with open(params['template']) as f:
+                    blank_config = f.read()
+                    new_config = blank_config.format(hostname=hostname, ip=ip)
+                    break
+            except:
+                input("Unable to generate config, ensure the template has {hostname} and {ip} then press ENTER")
+
         
         new_file = 'config/{}.txt'.format(hostname)
 
@@ -56,10 +64,22 @@ def generate(name, ip):
         return(True)
 
          
+def exists(vehicle):
+    params = parameters.get()
+    filename = 'config/{}-{}-{}.txt'.format(params['prefix'], vehicle[0], params['suffix'])
 
-            
+    try:
+        files = os.listdir('config')
+        if filename in files:
+            return(filename)
+        else:
+            return(False)
+    except:
+        return(False)
+
+
 
 
 if __name__ == '__main__':
     os.chdir('..')
-    generate('test', '10.11.12.13')
+    generate(['test', '10.11.12.13'])

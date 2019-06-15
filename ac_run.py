@@ -1,4 +1,4 @@
-from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version
+from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config
 from commands import close, com, credentials, initialize, match, read, write
 
 
@@ -12,8 +12,15 @@ Main run file
 def main():
 
     while True:
+        # Get parameters
+        params = parameters.get()
+
         # Get vehicle details
         vehicle = details.get()
+
+        # Check config exists
+        if not config.exists(vehicle):
+            config.generate(vehicle)
 
         # Initialize serial
         console = initialize.port()

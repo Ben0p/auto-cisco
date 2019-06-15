@@ -112,4 +112,7 @@ input/
 output/
 configs/
 lists/
+config/
+firmware/
+settings/
 *__pycache__/

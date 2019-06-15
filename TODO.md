@@ -21,6 +21,7 @@
     - [ ] Completed date / time
     - [ ] Checks (ping)
     - [ ] firmware version
+- [ ] Prompt to overwrite config if 3702 is already configured
   
 
 

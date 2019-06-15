@@ -9,26 +9,27 @@ Generates file if it doesn't exist
 def get():
     line_count = 0
     settings = {}
-    if os.path.isdir("settings"):
-        if os.path.exists("settings/settings.txt"):
-            with open('settings/settings.txt') as f:
-                for line in f:
-                    line_count =+ 1
-                    line = line.strip()
-                    line = line.split('=')
-                    setting = line[0]
-                    param = line[1]
-                    settings[setting] = param
-            if line_count == 0:
-                print("Config is blank, populating parameters...")
+    while True:
+        if os.path.isdir("settings"):
+            if os.path.exists("settings/settings.txt"):
+                with open('settings/settings.txt') as f:
+                    for line in f:
+                        line_count =+ 1
+                        line = line.strip()
+                        line = line.split('=')
+                        setting = line[0]
+                        param = line[1]
+                        settings[setting] = param
+                if line_count == 0:
+                    print("Config is blank, populating parameters...")
+                    generate()
+                return(settings)
+            else:
+                print("settings/settings.txt not found, creating file...")
                 generate()
-            return(settings)
         else:
-            print("settings/settings.txt not found, creating file...")
+            print("No settings directory found, creating directory...")
             generate()
-    else:
-        print("No settings directory found, creating directory...")
-        generate()
 
 
 def generate():
@@ -68,7 +69,16 @@ def populate():
         get()
     else:
         generate()
-            
+
+def update(param, value):
+    settings = get()
+    settings[param] = value
+    copyfile("settings/settings.txt", "settings/settings.back")
+    with open('settings/settings.txt', 'w') as f:
+        for key in settings:
+            f.write('{}={}\n'.format(key, settings[key]))
+        f.close()
+
 
 if __name__ == "__main__":
     os.chdir('..')
