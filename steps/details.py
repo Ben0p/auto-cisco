@@ -1,5 +1,5 @@
 import os
-
+from steps import parameters
 
 def check():
     '''
@@ -35,16 +35,20 @@ def check():
 
 def get(): 
     check()
+    params = parameters.get()
     while True:
         no_match = True
         name = input("Enter vehicle name (e.g. DT201): ")
+        hostname = '{}{}{}'.format(params['prefix'], name, params['suffix']).lower()
         with open('./lists/master.csv', 'r') as f:
             for line in f:
                 stripped = line.strip()
                 split = stripped.split(',')
                 if split[0] == name:
-                    print('----- Matched {} -----'.format(split[0]))
-                    print('IP: {}'.format(split[1]))
+                    print('-------- Matched --------')
+                    print('    Name: {}'.format(split[0]))
+                    print('Hostname: {}'.format(hostname))
+                    print('      IP: {}'.format(split[1]))
                     print('-------------------------')
                     user_input = input('Is this correct? (y/n): ')
                     while True:
@@ -63,8 +67,9 @@ def get():
             if appendage == 'y':
                 ip = input("Enter IP address: ")
                 print("------------------")
-                print("Name: {}".format(name))
-                print("  IP: {}".format(ip))
+                print("    Name: {}".format(name))
+                print("Hostname: {}".format(hostname))
+                print("      IP: {}".format(ip))
                 print("------------------")
                 check_append = input("You good bro? (y/n): ")
                 if check_append == 'y':

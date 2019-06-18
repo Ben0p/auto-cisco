@@ -2,7 +2,7 @@
 
 
 def boot(prompt):
-    if len(prompt) > 9:
+    if len(prompt) >= 9:
         if prompt[-7] == '-fleet>' or prompt[-7] == '-fleet#':
             return(True)
         if prompt[-9] == '-command>' or prompt[-9] == '-command#':
@@ -14,6 +14,8 @@ def boot(prompt):
         elif len(prompt) == 17 and prompt[:2] == 'AP' and prompt[-1:] == '#':
             return(True)
         elif prompt[:9] == ' --More--':
+            return(True)
+        elif prompt[-1] == '>' or prompt[-1] == '#':
             return(True)
         else:
             return(False)

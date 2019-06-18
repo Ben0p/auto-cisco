@@ -1,3 +1,7 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
 import time
 from commands import close, com, credentials, initialize, match, read, write
 
@@ -15,25 +19,31 @@ def check(console):
                 if prompt[0] == 'ap>' or  prompt[0] == 'ap#':
                     print('Autonomous')
                     return(True)
-                    break
             elif len(prompt[0]) >= 10:
                 if prompt[0][:2] == 'AP':
                     if prompt[0][-1:] == '>' or  prompt[0][-1:] == '#':
                         print('Not autonomous')
                         return(False)
-                        break
 
                 elif prompt[0][-9:] == '-command#' or prompt[0][-7:] == '-fleet#':
                         print('Autonomous')
                         return(True)
-                        break
                 elif prompt[0][-9:] == '-command>' or prompt[0][-7:] == '-fleet>':
                         print('Autonomous')
                         return(True)
-                        break
+                elif prompt[0][-1] == '>' or prompt[0][-1] == '#':
+                    print('Autonomous')
+                    return(True)   
+            elif len(prompt[0]) == 9:
+                if prompt[0][:9] == 'Username:':
+                    print('Autonomous')
+                    return(True)
+                else:
+                    print("Unreconized prompt")
 
         else:
             write.serial(console, "\r")
+            time.sleep(1)
 
 
 def convert(console):
@@ -59,12 +69,14 @@ def convert(console):
                 time.sleep(1)
                 print('Stating autonomous conversion')
                 return(True)
-                break
             elif prompt[0][-1:] == '>':
                 print('Not Logged in')
                 return(False)
-                break
             else:
                 write.serial(console, '\r')
         else:
             write.serial(console, '\r')
+
+
+if __name__ == "__main__":
+    check(initialize.open('COM1'))

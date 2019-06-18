@@ -20,7 +20,7 @@ def check():
             print("Created config directory")
 
     while True:
-        if not os.path.exists(template):
+        if not os.path.exists('config/{}'.format(template)):
             print("{} not found, copy template file there or change config to suit".format(template))
             input("Press ENTER to continue...")
         else:
@@ -36,7 +36,7 @@ def generate(vehicle):
         hostname = '{}{}{}'.format(params['prefix'], name, params['suffix'])
         while True:
             try:
-                with open(params['template']) as f:
+                with open('config/{}'.format(params['template'])) as f:
                     blank_config = f.read()
                     new_config = blank_config.format(hostname=hostname, ip=ip)
                     break
@@ -48,7 +48,7 @@ def generate(vehicle):
 
         if os.path.exists(new_file):
             while True:
-                overwrite = input("'/{}' exists, overwrite? (y/n)".format(new_file))
+                overwrite = input("'/{}' exists, overwrite? (y/n): ".format(new_file))
                 if overwrite == 'y':
                     break
                 if overwrite == 'n':

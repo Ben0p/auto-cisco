@@ -14,7 +14,6 @@ def check(console):
             if match.boot(prompt[0]):
                 print("Booted")
                 return(True)
-                break
             elif any("--More--" in s for s in prompt):
                 write.serial(console, ' ')
         else:

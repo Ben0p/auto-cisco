@@ -1,5 +1,11 @@
+if __name__ == "__main__":
+    import sys
+    sys.path.append("..")
+
+
 import time
 from commands import close, com, credentials, initialize, match, read, write
+from steps import login
 
 
 def check(console):
@@ -21,15 +27,20 @@ def check(console):
             elif prompt[0] == 'ap>' or prompt[0] == 'ap#':
                 write.serial(console, "sh ver")
             elif len(prompt[0]) >= 10:
+                # suffix no longer relevant
+                '''
                 if prompt[0][-9:] == '-command#' or prompt[0][-7:] == '-fleet#':
                         print('Upgraded')
                         return(True)
-                        break
                 elif prompt[0][-9:] == '-command>' or prompt[0][-7:] == '-fleet>':
                         print('Upgraded')
                         return(True)
-                        break
-
+                '''
+                if prompt[0][-1] == '>' or prompt[0][-1] == '#':
+                    write.serial(console, "sh ver")
+            elif len(prompt[0]) == 9:
+                if prompt[0][:9] == 'Username:':
+                    login.now(console)
 
             if any(new_ver in s for s in prompt):
                 print('Upgraded')
@@ -42,6 +53,7 @@ def check(console):
 
         else:
             write.serial(console, "\r")
+            time.sleep(1)
 
 def upgrade(console):
     while True:
@@ -56,10 +68,12 @@ def upgrade(console):
                 prompt = read.serial(console)
                 time.sleep(1)
                 return(True)
-                break
             else:
                 print("Not enabled.")
                 return(False)
-                break
         else:
             write.serial(console, "\r")
+
+
+if __name__ == "__main__":
+    check(initialize.open('COM1'))

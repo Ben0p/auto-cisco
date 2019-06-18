@@ -24,13 +24,27 @@ def now(console):
                 time.sleep(3)
                 print('Logged in')
                 return(True)
-                break
             elif prompt[0][-1:] == '#':
                 print('Logged in')
                 return(True)
-                break
+            elif prompt[0][:9] == 'Username:':
+                write.serial(console, '{}\r'.format(credentials.configured_username))
+                prompt = read.serial(console)
+                time.sleep(3)
+                write.serial(console, '{}\r'.format(credentials.configured_password))
+                prompt = read.serial(console)
+                time.sleep(3)
+                write.serial(console, '{}\r'.format('en'))
+                prompt = read.serial(console)
+                time.sleep(3)
+                write.serial(console, '{}\r'.format(credentials.configured_password))
+                prompt = read.serial(console)
+                time.sleep(3)
+                print('Logged in')
+                return(True)
             else:
                 write.serial(console, '\r')
+                time.sleep(1)
 
 
 

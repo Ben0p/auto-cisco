@@ -63,7 +63,7 @@ def populate():
                 lines += 1
             if lines > 1:
                 copyfile("settings/settings.txt", "settings/settings.back")
-            f.write('com=COM1\ntemplate=config/cb-3702.txt\nprefix=cb-\nsuffix=-3702\nfirmware=tftp/ap3g2-k9w7-tar.153-3.JI1.tar\npc_ip=10.0.0.5\nwgb_ip=10.0.0.2')
+            f.write('com=\ntemplate=command\nprefix=cb-\nsuffix=-wgb\nfirmware=tftp/ap3g2-k9w7-tar.153-3.JI1.tar\npc_ip=10.0.0.5\nwgb_ip=10.0.0.2')
             f.close()
             print("Set default parameters.")
         get()

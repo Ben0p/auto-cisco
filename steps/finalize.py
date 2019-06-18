@@ -1,6 +1,7 @@
 import time
 import random
 from commands import close, com, credentials, initialize, match, read, write
+from steps import parameters
 
 
 names = [
@@ -17,10 +18,15 @@ names = [
     'Paul',
     'Craig',
     'Roy',
+    'Steve'
     ]
 
 
 def finish(console, vehicle):
+    params = parameters.get()
+
+    hostname = '{}{}{}'.format(params['prefix'], vehicle[0], params['suffix'])
+
     while True:
         prompt = read.serial(console)
         if prompt:
@@ -39,34 +45,35 @@ def finish(console, vehicle):
                 close.serial(console)
                 break
 
-            else:
-                print("Not enabled.")
-                return(False)
-                break
         else:
             write.serial(console, "\r")
 
-    if configured_name.upper() == vehicle[0]:
-        print('Configured hostname matches specified vehicle [OK]')
-        print("--------------------------------------")
-        print("CONGRATULATIONS! MADE IT TO THE END!")
-        print("Configured as COMMAND")
-        print("Check config via putty.")
-        print("Don't forget to record serial and MAC")
-        print("--------------------------------------")
-        print('--------------------------------------')
-        print('   VEHICLE:     {}'.format(vehicle[0]))
-        print('COMMAND IP:     {}'.format(vehicle[1]))
-        print('  FLEET IP:     {}'.format(vehicle[2]))
-        print('--------------------------------------')
-        print('')
-        print('Milkshakes are on {}'.format(random.choice(names)))
-        input('Ready for another round? [ENTER]')
-
-    elif configured_name.upper() != vehicle[0]:
+    
+    if configured_name != vehicle[0]:
+        print("!!WARNING!!")
         print('Configured hostname DOES NOT match specified vehicle [FAIL]')
-        print("Configured:  {}".format(configured_name.upper()))
+        print("Configured:  {}".format(configured_name))
         print("Specified:   {}".format(vehicle[0]))
-        print("ABORTING...")
-        input("Try again? [ENTER]")
-
+    
+    while True:
+        tryAgain = input("Try again (y) or ignore (n): ")
+        
+        if tryAgain == 'n':
+            print("--------------------------------------")
+            print("CONGRATULATIONS! MADE IT TO THE END!")
+            print("Check config via putty.")
+            print("Don't forget to update records")
+            print("--------------------------------------")
+            print('--------------------------------------')
+            print('   VEHICLE:     {}'.format(vehicle[0]))
+            print('        IP:     {}'.format(vehicle[1]))
+            print('  HOSTNAME:     {}'.format(hostname))
+            print('--------------------------------------')
+            print('')
+            print('Milkshakes are on {}'.format(random.choice(names)))
+            input('Ready for another round? [ENTER]')
+            break
+        elif tryAgain == "y":
+            break
+        else:
+            print("How hard is it to press y or n")

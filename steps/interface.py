@@ -1,5 +1,6 @@
 import time
 from commands import close, com, credentials, initialize, match, read, write
+from steps import login
 
 
 
@@ -21,11 +22,11 @@ def check(console):
                 if any('10.0.0.2' in s for s in prompt):
                     print("Interface set for 10.0.0.2")
                     return(True)
-                    break
                 else:
                     print("Interface not set.")
                     return(False)
-                    break
+            if prompt[0][:9] == 'Username:':
+                login.now(console)
         else:
             write.serial(console, "\r")
 
@@ -70,6 +71,5 @@ def configure(console):
             else:
                 print("Not enabled.")
                 return(False)
-                break
         else:
             write.serial(console, "\r")

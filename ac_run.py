@@ -1,5 +1,7 @@
-from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config
+from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config, tftp
 from commands import close, com, credentials, initialize, match, read, write
+from multiprocessing import Process
+import time
 
 
 
@@ -8,8 +10,17 @@ Main run file
 """
 
 
-
 def main():
+
+    print("Launching tftp server")
+
+    t = Process(target=tftp.start)
+    t.daemon = True
+    t.start()
+
+
+    already_configured = False
+
 
     while True:
         # Get parameters
@@ -35,11 +46,12 @@ def main():
         upgraded = version.check(console)
 
         # Check config
-        configured, configured_as = configuration.check(console)
+        configured = configuration.check(console)
 
         # Set interface as set if already configured
         if configured:
             interface_set = True
+            already_configured = True
         elif not configured:
             interface_set = False
 
@@ -74,19 +86,35 @@ def main():
                 enabled = enable.check(console)
                 configs_loaded = configuration.copy(console, vehicle)
                 configure_command = configuration.command(console, vehicle)
-                configured, configured_as = configuration.check(console)
+                configured = configuration.check(console)
 
 
-        if configured:
-            if configured_as == 'command':
+        if configured and not already_configured:
+            if configured == 'command':
                 test_ok = test.command(console)
         
                 if test_ok:
                     finalize.finish(console, vehicle)
                 else:
                     print("Ping test failed")
+        
+        if already_configured:
+            overwrite = configuration.overWrite()
+            if overwrite:
+                interface_configured = interface.check(console)
+                if not interface_configured:
+                    interface.configure(console)
+                enabled = enable.check(console)
+                configs_loaded = configuration.copy(console, vehicle)
+                configured = configuration.load(console, vehicle)
+                test_ok = test.command(console)
+
+                finalize.finish(console, vehicle)
+
 
 
 
 if __name__ == '__main__':
+
+
     main()
