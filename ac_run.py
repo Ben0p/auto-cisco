@@ -12,11 +12,16 @@ Main run file
 
 def main():
 
-    print("Launching tftp server")
 
-    t = Process(target=tftp.start)
-    t.daemon = True
-    t.start()
+    try:
+        print("Launching tftp server")
+        
+        t = Process(target=tftp.start)
+        t.daemon = True
+        t.start()
+    
+    except:
+        print("Filed to launch tftp")
 
 
     already_configured = False

@@ -1,7 +1,0 @@
-com=COM1
-template=command
-prefix=cb-
-suffix=-wgb
-firmware=tftp/ap3g2-k9w7-tar.153-3.JI1.tar
-pc_ip=10.0.0.5
-wgb_ip=10.0.0.2
