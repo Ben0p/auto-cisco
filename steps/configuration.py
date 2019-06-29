@@ -92,38 +92,6 @@ def copy(console, vehicle):
 
 
 
-def command(console, vehicle):
-    name = vehicle[0].lower()
-    command_file = 'cb-{}-command.txt'.format(name)
-
-    while True:
-        prompt = read.serial(console)
-        if prompt:
-            if prompt[0][-1:] == "#":
-                write.serial(console, "copy flash:{} run".format(command_file))
-                prompt = read.serial(console)
-                time.sleep(1)
-                write.serial(console, '\r')
-                time.sleep(2)
-                prompt = read.serial(console)
-                write.serial(console, '\r')
-                time.sleep(2)
-                prompt = read.serial(console)
-                write.serial(console, 'wr mem')
-                time.sleep(1)
-                prompt = read.serial(console)
-                write.serial(console, '\r')
-                time.sleep(4)
-                prompt = read.serial(console)
-                print("Configured as command")
-                return(True)
-            else:
-                print("Not enabled.")
-                return(False)
-        else:
-            write.serial(console, "\r")
-
-
 def load(console, vehicle):
 
     print("Loading config to running-config")

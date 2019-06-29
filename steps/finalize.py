@@ -41,7 +41,7 @@ def finish(console, vehicle):
                 write.serial(console, '\r')
                 time.sleep(2)
                 prompt = read.serial(console)
-                configured_name = prompt[0].split('-')[1]
+                configured_name = prompt[0][:-1]
                 close.serial(console)
                 break
 
@@ -49,31 +49,36 @@ def finish(console, vehicle):
             write.serial(console, "\r")
 
     
-    if configured_name != vehicle[0]:
+    try_agian = 'n'
+
+    if configured_name != hostname:
         print("!!WARNING!!")
         print('Configured hostname DOES NOT match specified vehicle [FAIL]')
         print("Configured:  {}".format(configured_name))
         print("Specified:   {}".format(vehicle[0]))
+
+        while True:
+            try_again = input("Try again (y) or ignore (n): ")
+            if try_again == 'n':
+                break
+            elif try_again == "y":
+                break
+            else:
+                print("How hard is it to press y or n")
     
-    while True:
-        tryAgain = input("Try again (y) or ignore (n): ")
         
-        if tryAgain == 'n':
-            print("--------------------------------------")
-            print("CONGRATULATIONS! MADE IT TO THE END!")
-            print("Check config via putty.")
-            print("Don't forget to update records")
-            print("--------------------------------------")
-            print('--------------------------------------')
-            print('   VEHICLE:     {}'.format(vehicle[0]))
-            print('        IP:     {}'.format(vehicle[1]))
-            print('  HOSTNAME:     {}'.format(hostname))
-            print('--------------------------------------')
-            print('')
-            print('Milkshakes are on {}'.format(random.choice(names)))
-            input('Ready for another round? [ENTER]')
-            break
-        elif tryAgain == "y":
-            break
-        else:
-            print("How hard is it to press y or n")
+    if configured_name == hostname or try_again == 'n':
+        print("--------------------------------------")
+        print("CONGRATULATIONS! MADE IT TO THE END!")
+        print("Check config via putty.")
+        print("Don't forget to update records")
+        print("--------------------------------------")
+        print('--------------------------------------')
+        print('   VEHICLE:     {}'.format(vehicle[0]))
+        print('        IP:     {}'.format(vehicle[1]))
+        print('  HOSTNAME:     {}'.format(hostname))
+        print('--------------------------------------')
+        print('')
+        print('Milkshakes are on {}'.format(random.choice(names)))
+        input('Ready for another round? [ENTER]')
+    

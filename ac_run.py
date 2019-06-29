@@ -21,7 +21,7 @@ def main():
         t.start()
     
     except:
-        print("Filed to launch tftp")
+        print("Failed to launch tftp")
 
 
     already_configured = False
@@ -88,20 +88,15 @@ def main():
         
         if upgraded:
             if not configured:
+                # Check if enabled
                 enabled = enable.check(console)
-                configs_loaded = configuration.copy(console, vehicle)
-                configure_command = configuration.command(console, vehicle)
+                # Copy config, prompt if already exists
+                configuration.copy(console, vehicle)
+                # Loads config into running-config
+                configuration.load(console, vehicle)
+                # Checks if configured 
                 configured = configuration.check(console)
 
-
-        if configured and not already_configured:
-            if configured == 'command':
-                test_ok = test.command(console)
-        
-                if test_ok:
-                    finalize.finish(console, vehicle)
-                else:
-                    print("Ping test failed")
         
         if already_configured:
             overwrite = configuration.overWrite()
@@ -110,11 +105,11 @@ def main():
                 if not interface_configured:
                     interface.configure(console)
                 enabled = enable.check(console)
-                configs_loaded = configuration.copy(console, vehicle)
+                configuration.copy(console, vehicle)
                 configured = configuration.load(console, vehicle)
-                test_ok = test.command(console)
 
-                finalize.finish(console, vehicle)
+        test.command(console)
+        finalize.finish(console, vehicle)
 
 
 
