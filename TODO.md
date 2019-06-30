@@ -1,5 +1,11 @@
 # Auto Cisco TODO
 
+## Limitations
+- [ ] Default cisco username password hardcoded
+    - [ ] No way to set a user-defined username / password
+- [ ] Only checks one version of firmware
+    - [ ] Need to detect or prompt for desired firmware version
+
 ## Bugs
 - [x] If user defined device name is case sensitive when matching in master.csv
 - [x] Doesn't match uppercase hostname when finalizing

@@ -2,6 +2,8 @@
 Automated Cisco 3702 configuration file generator and programmer
 
 ## Features
+* Built in tftp server
+* Wizard on first run
 * Converts AP to autonomous
 * Sets a temporary IP address on BVI1
 * Uploads new firmware via tftp
@@ -9,27 +11,49 @@ Automated Cisco 3702 configuration file generator and programmer
 * Does a ping test
 * Whole thing is looped for easy batching
 
-## Steps
+## Requirements
+* Windows only
+* Serial connection to 3702
+* Ethernet connection to 3702
+* A template configuration file
+    * Replace BVI interface ip address with {ip} in config file
+    * Replace hostname with {hostname} in config file
+    * Put this in the same directory as ac_run.exe
+* Firmware file if upgrading (See TODO)
 
-1. Parameters are stored in a settings.txt file
+## Usage
+1. Use ac_run.exe in /dist/
+2. A wizard will launch on first run (not Gandalf unfortunatly)
+    * Follow prompts
+3. Rest should be self explanitory
+
+## Optional
+* A /lists/master.csv (generated on first run)
+    * list of devices name,ip
+    * Saves manually trying to find an IP address
+
+## Over-simplified algorithm explanation
+1. Starts tftp server in a parallel process
+2. Checks for a settings.txt file
+    * Lauches wizard if it doesn't exist
+3. Parameters are stored in a settings.txt file
     * COM port
-    * Temp IP address
+    * Temp IP address for 3702
     * PC IP address
     * Hostname prefix and suffix
-    * Firmware file
-    * Template file
-2. settings.txt is populated with default settings if non existent
-3. Does pre-flight checks
-    * Config file
-    * PC IP
-    * Serial Port
-    * Firmware file
-    * TFTP is running
+    * Template file location
+    * Upper or lowercase for hostname
 4. Prompts for a name
 5. Looks up name against master.csv to retrieve IP address
-6. Initialized serial COM port
-7. Waits for 3702 to boot
-8. Checks if autonomous
-9. Checks firmware version
-10. Checks configuration status
-11. Does whatever needs to be done at this point
+    * Prompts if there is no match
+6. Generates a config file based on template
+7. Initialized serial COM port
+8. Waits for 3702 to boot
+9. Checks if autonomous
+10. Checks firmware version
+11. Checks configuration status
+12. Does whatever needs to be done at this point
+13. Performs a ping test and checks if config actually loaded
+
+## TODO
+See TODO
