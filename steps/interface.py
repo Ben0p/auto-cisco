@@ -1,6 +1,6 @@
 import time
 from commands import close, com, credentials, initialize, match, read, write
-from steps import login
+from steps import login, parameters
 
 
 
@@ -32,6 +32,8 @@ def check(console):
 
 
 def configure(console):
+    params = parameters.get()
+    temp_ip = params['temp']
     while True:
         prompt = read.serial(console)
         if prompt:
@@ -48,7 +50,7 @@ def configure(console):
                 write.serial(console, '\r')
                 prompt = read.serial(console)
                 time.sleep(1)
-                write.serial(console, "ip address 10.0.0.2 255.255.255.0")
+                write.serial(console, "ip address {} 255.255.255.0".format(temp_ip))
                 prompt = read.serial(console)
                 time.sleep(1)
                 write.serial(console, '\r')

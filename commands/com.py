@@ -36,7 +36,11 @@ def getCOM():
         if len(active) > 1:
             while True:
                 user_COM = input('{} active COM ports, choose port ({})...'.format(len(active), active[0]))
-                if user_COM[:3] == 'COM':
+                if user_COM[:3] == 'COM' and isinstance(int(user_COM[3:]), int):
+                    return(user_COM)
+                elif len(user_COM) == 1 and isinstance(int(user_COM), int):
+                    print("Using COM{}".format(user_COM))
+                    user_COM = 'COM{}'.format(user_COM)
                     return(user_COM)
                 else:
                     print('Port number must start with COM')

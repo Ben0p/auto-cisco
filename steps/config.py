@@ -30,10 +30,15 @@ def check():
 
 def generate(vehicle):
     params = check()
+    case = params['case']
     name = vehicle[0].lower()
     ip = vehicle[1]
     if params:
         hostname = '{}{}{}'.format(params['prefix'], name, params['suffix'])
+        if case == 'lower':
+            hostname = hostname.lower()
+        elif case == 'upper':
+            hostname = hostname.upper()
         while True:
             try:
                 with open('{}'.format(params['template'])) as f:

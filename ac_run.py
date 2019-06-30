@@ -1,6 +1,5 @@
-from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config, tftp
+from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config
 from commands import close, com, credentials, initialize, match, read, write
-from multiprocessing import Process
 import time
 
 
@@ -9,19 +8,29 @@ import time
 Main run file
 """
 
+def start():
+    import tftpy
+    server = tftpy.TftpServer('')
+    server.listen('0.0.0.0', 69)
+
 
 def main():
-
-
-    try:
-        print("Launching tftp server")
-        
-        t = Process(target=tftp.start)
-        t.daemon = True
-        t.start()
     
-    except:
-        print("Failed to launch tftp")
+
+
+    launched = False
+    if not launched:
+        import multiprocessing
+        multiprocessing.freeze_support()
+        try:
+            print("Launching tftp server")            
+            t = multiprocessing.Process(target=start)
+            t.daemon = True
+            t.start()
+            launched = True
+        
+        except:
+            print("Failed to launch tftp")
 
 
     already_configured = False

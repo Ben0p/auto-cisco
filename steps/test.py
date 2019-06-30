@@ -1,5 +1,6 @@
 import time
 from commands import close, com, credentials, initialize, match, read, write
+from steps import parameters
 
 
 
@@ -7,13 +8,15 @@ def command(console):
     '''
     Pings command gateway
     '''
+    params = parameters.get()
     failedPing = 0
 
     while True:
         prompt = read.serial(console)
+        test = params['test']
         if prompt:
             if prompt[0][-1:] == '#' or prompt[0][-1:] == '>':
-                    write.serial(console, "ping 10.221.64.1")
+                    write.serial(console, "ping {}".format(test))
                     prompt = read.serial(console)
                     time.sleep(1)
                     write.serial(console, '\r')

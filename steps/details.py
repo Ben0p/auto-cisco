@@ -38,8 +38,11 @@ def get():
     params = parameters.get()
     while True:
         no_match = True
-        name = input("Enter vehicle name (e.g. DT201): ")
-        hostname = '{}{}{}'.format(params['prefix'], name, params['suffix']).lower()
+        name = input("Enter device name (e.g. DT201): ")
+        if params['case'] == 'lower':
+            hostname = '{}{}{}'.format(params['prefix'], name, params['suffix']).lower()
+        elif params['case'] == 'upper':
+            hostname = '{}{}{}'.format(params['prefix'], name, params['suffix']).upper()
         with open('./lists/master.csv', 'r') as f:
             for line in f:
                 stripped = line.strip()

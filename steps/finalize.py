@@ -18,7 +18,8 @@ names = [
     'Paul',
     'Craig',
     'Roy',
-    'Steve'
+    'Steve',
+    'Shane'
     ]
 
 
@@ -26,6 +27,11 @@ def finish(console, vehicle):
     params = parameters.get()
 
     hostname = '{}{}{}'.format(params['prefix'], vehicle[0], params['suffix'])
+
+    if params['case'] == 'lower':
+        hostname = hostname.lower()
+    elif params['case'] == 'upper':
+        hostname = hostname.upper()
 
     while True:
         prompt = read.serial(console)
@@ -49,7 +55,6 @@ def finish(console, vehicle):
             write.serial(console, "\r")
 
     
-    try_agian = 'n'
 
     if configured_name != hostname:
         print("!!WARNING!!")

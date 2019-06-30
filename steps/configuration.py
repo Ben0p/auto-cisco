@@ -51,7 +51,7 @@ def copy(console, vehicle):
         prompt = read.serial(console)
         if prompt:
             if prompt[0][-1:] == "#":
-                write.serial(console, "copy tftp://10.0.0.5/config/{} flash:".format(conf_file))
+                write.serial(console, "copy tftp://{}/config/{} flash:".format(params['ip'], conf_file))
                 time.sleep(1)
                 prompt = read.serial(console)
                 write.serial(console, "\r")

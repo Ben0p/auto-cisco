@@ -3,6 +3,8 @@ from shutil import copyfile
 from steps import ip
 from commands import com
 import re
+import ipaddress
+from netaddr import IPNetwork, IPAddress
 
 """
 Parses settings text file
@@ -11,7 +13,7 @@ Generates file if it doesn't exist
 settings = {}
 
 def get():
-    required_settings = ['com', 'template', 'hostname', 'ip', 'prefix', 'suffix', 'case']
+    required_settings = ['template', 'hostname', 'ip', 'prefix', 'suffix', 'case', 'temp', 'test', 'com']
     line_count = 0
     while True:
         if os.path.isdir("settings"):
@@ -32,11 +34,10 @@ def get():
                     settings_in_file = []
                     for key, value in settings.items():
                         settings_in_file.append(key)
-                    for required_setting in required_settings:
-                        if required_setting not in settings_in_file:
-                            missing_setting = True
-                        else:
-                            missing_setting = False
+                    if len(settings_in_file) < len(required_settings):
+                        missing_setting = True
+                    else:
+                        missing_setting = False
                     
                 if missing_setting:
                     print("Required settings missing in settings file, starting wizard")
@@ -90,11 +91,12 @@ def wizard():
     while True:
         manualCom = input("Manually specify COM port (m) or scan ports (s): ")
         if manualCom == 'm':
-            comp = input("Enter COM port (e.g COM1): ")
+            comp = input("Enter COM port (e.g COM1 or 1): ")
             if comp[:3] == 'COM' and isinstance(int(comp[3:]), int):
                 settings['com'] = comp
                 break
-            elif len(comp) == 1 and isinstance(comp, int):
+            elif len(comp) == 1 and isinstance(int(comp), int):
+                print("Using COM{}".format(comp))
                 comp = 'COM{}'.format(comp)
                 settings['com'] = comp
                 break
@@ -122,9 +124,6 @@ def wizard():
                     print("Couldn't parse template, ensure it has {hostname} and {ip}")
             else:
                 print("Couldn't find template, try again buddy")
-            
-
-
         elif manualTemplate == 's':
             files = scanFiles()
             print(files)
@@ -153,6 +152,33 @@ def wizard():
             print("Unreconised IP, or press (t)")
 
     while True:
+        octets = ip_addr.split('.')
+        suggested_ip = int(octets[-1])+1
+        suggested_ip = '{}.{}.{}.{}'.format(octets[0], octets[1], octets[2], suggested_ip)
+        temp_ip = input("Enter temporary IP address for 3702 ({}): ".format(suggested_ip))
+        valid_ip = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",temp_ip)
+        if valid_ip:
+            if IPAddress(temp_ip) in IPNetwork('{}/24'.format(ip_addr)):
+                print("{} is within /24 range OK".format(temp_ip))
+                settings['temp'] = temp_ip
+                break
+            else:
+                print("{} not within /24 range of {}, try agian.".format(temp_ip, ip_addr))
+                continue
+        else:
+            print("Unreconised IP, or press (t)")
+    
+    while True:
+        test_ip = input("Enter IP for ping test once configured (gateway): ")
+        valid_ip = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",test_ip)
+        if valid_ip:
+            print("{} seems legit".format(test_ip))
+            settings['test'] = test_ip
+            break
+        else:
+            print("IP not valid")
+
+    while True:
         prefix = input("Enter standard prefix e.g. 'cb-' : ")
         suffix = input("Enter standard suffix e.g. '-wgb' : ")
         case = input("Uppercase (u) or lowercase (l): ")
@@ -166,7 +192,6 @@ def wizard():
             print("You've gone and stuffed up, starting again...")
             continue
         confirmed_hostname = input("Example hostname '{}', looks good? (y/n): ".format(example_hostname))
-
         if confirmed_hostname == 'y':
             settings['prefix'] = prefix
             settings['suffix'] = suffix
@@ -184,7 +209,6 @@ def wizard():
     with open('settings/settings.txt', 'w') as f:
             for key, value in settings.items():
                 f.write("{}={}\n".format(key,value))
-
 
 
 

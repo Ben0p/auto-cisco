@@ -8,14 +8,17 @@ def serial(console):
     '''
     buffer = console.inWaiting()
     if buffer:
-        lines = console.read(buffer)
-        lines = lines.decode('ascii')
-        lines = lines.replace('\x08', '')
-        lines = lines.strip()
-        lines = lines.splitlines()
-        if lines:
-            for line in lines:
-                print(line)
-            return(lines)
-        else:
-            return('')
+        try:
+            lines = console.read(buffer)
+            lines = lines.decode('ascii')
+            lines = lines.replace('\x08', '')
+            lines = lines.strip()
+            lines = lines.splitlines()
+            if lines:
+                for line in lines:
+                    print(line)
+                return(lines)
+            else:
+                return('')
+        except:
+            pass
