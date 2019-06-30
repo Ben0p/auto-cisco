@@ -1,6 +1,7 @@
 # Auto Cisco TODO
 
 ## Bugs
+- [x] If user defined device name is case sensitive when matching in master.csv
 - [x] Doesn't match uppercase hostname when finalizing
 - [x] Hostname not uppercase if setting it to uppercase in settings
 - [x] 10.0.0.5 hardcoded in tftp transfer

@@ -47,7 +47,7 @@ def get():
             for line in f:
                 stripped = line.strip()
                 split = stripped.split(',')
-                if split[0] == name:
+                if split[0].lower() == name.lower():
                     print('-------- Matched --------')
                     print('    Name: {}'.format(split[0]))
                     print('Hostname: {}'.format(hostname))
