@@ -7,6 +7,9 @@
     - [ ] Need to detect or prompt for desired firmware version
 
 ## Bugs
+- [ ] Doesn't match configured IP with temp ip in settings
+- [ ] Still buggy recognising states (configured, booted, autonomous, upgraded...)
+- [x] IP hardcoded for firmware
 - [x] If user defined device name is case sensitive when matching in master.csv
 - [x] Doesn't match uppercase hostname when finalizing
 - [x] Hostname not uppercase if setting it to uppercase in settings

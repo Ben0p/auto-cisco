@@ -5,7 +5,7 @@ if __name__ == "__main__":
 
 import time
 from commands import close, com, credentials, initialize, match, read, write
-from steps import login
+from steps import login, parameters
 
 
 def check(console):
@@ -56,11 +56,13 @@ def check(console):
             time.sleep(1)
 
 def upgrade(console):
+    params = parameters.get()
+    ip = params['ip']
     while True:
-        prompt = read.serial(console)
+        prompt = read.serial(console) 
         if prompt:
             if prompt[0][-1:] == "#":
-                write.serial(console, "archive download-sw /overwrite /force-reload tftp://10.0.0.5/ap3g2-k9w7-tar.153-3.JI1.tar")
+                write.serial(console, "archive download-sw /overwrite /force-reload tftp://{}/ap3g2-k9w7-tar.153-3.JI1.tar".format(ip))
                 prompt = read.serial(console)
                 time.sleep(1)
                 write.serial(console, '\r')
