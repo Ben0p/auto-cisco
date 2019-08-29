@@ -1,6 +1,7 @@
 from steps import autonomous, boot, configuration, details, enable, finalize, interface, login, test, version, parameters, config
 from commands import close, com, credentials, initialize, match, read, write
 import time
+import socket, errno
 
 
 
@@ -13,13 +14,33 @@ def start():
     server = tftpy.TftpServer('')
     server.listen('0.0.0.0', 69)
 
+def checkTFTP():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    while True:
+        try:
+            s.bind(("0.0.0.0" 69))
+            return(True)
+            s.close()
+
+        except socket.error as e:
+            if e.errno == errno.EADDRINUSE:
+                print("Port is already in use, ")
+
+            else:
+                # something else raised the socket.error exception
+                print(e)
+
+        s.close()
+        
 
 def main():
     
 
 
-    launched = False
-    if not launched:
+    tftpFree = checkTFTP()
+
+    if not tftpInUse:
         import multiprocessing
         multiprocessing.freeze_support()
         try:
