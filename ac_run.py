@@ -14,48 +14,42 @@ def start():
     server = tftpy.TftpServer('')
     server.listen('0.0.0.0', 69)
 
-def checkTFTP():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def launchTFTP():
 
+    import multiprocessing
+    multiprocessing.freeze_support()
+    print("Launching tftp server")            
+    t = multiprocessing.Process(target=start)
+    t.daemon = True
+    t.start()
+    return(True)
+
+
+def portInUse(port):
+    import socket
+
+    print(f"Checking if TFTP port {port} (nice) is available...")
+    fail_count = 0
     while True:
-        try:
-            s.bind(("0.0.0.0" 69))
-            return(True)
-            s.close()
-
-        except socket.error as e:
-            if e.errno == errno.EADDRINUSE:
-                print("Port is already in use, ")
-
-            else:
-                # something else raised the socket.error exception
-                print(e)
-
-        s.close()
-        
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            try:
+                s.bind(('0.0.0.0', port))
+                s.close()
+                return(False)
+            except:
+                if fail_count >= 3:
+                    print("Get your sh** together, put it in a bag and take it to the sh** store, just get it together...")
+                    input("Check Task Manager for SolarWinds TFTP Sever, and yeet it")
+                    fail_count = 0
+                fail_count += 1
+                input("Port is already in use, close running tftp server and press [E n t e rr] ")
 
 def main():
-    
 
-
-    tftpFree = checkTFTP()
-
-    if not tftpInUse:
-        import multiprocessing
-        multiprocessing.freeze_support()
-        try:
-            print("Launching tftp server")            
-            t = multiprocessing.Process(target=start)
-            t.daemon = True
-            t.start()
-            launched = True
-        
-        except:
-            print("Failed to launch tftp")
-
+    if not portInUse(69):
+        launchTFTP()
 
     already_configured = False
-
 
     while True:
         # Get parameters
