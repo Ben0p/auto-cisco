@@ -27,8 +27,8 @@
 - [x] not finding config file
     - Was only looking in config/ folder (config/config/template)
 - [ ] ping test a bit wonky
-- [ ] If there are alot of configs, template scan will return all
-    - [ ] Use template folder or current directory instead
+- [x] If there are alot of configs, template scan will return all
+    - [x] Use template folder or current directory instead
 - [x] WGB temp IP hard coded to be set as 10.0.0.2
     - [x] Prompt in wizard or generate based on PC ip
     - [x] Retreive when setting interface on wgb
@@ -46,7 +46,7 @@
     - Put a try except around the serial read
 
 ## General
-- [ ] Check if another tftp server is running
+- [x] Check if another tftp server is running
 - [ ] Check if PC ip matches what is saved in config
 - [ ] Option to reboot wgb to double check or if tests fail
 - [x] Incorporate uppercase or lowercase when writing hostname and files
@@ -79,8 +79,8 @@
     - [x] Get IP addresses and hostname
     - [x] Set WGB temp IP to suit or
     - [ ] Prompt to change laptop IP
-- [ ] Generate template from an existing config
-    - [ ] Replace IP and Hostname with {ip} {hostname}
+- [x] Generate template from an existing config
+    - [x] Replace IP and Hostname with {ip} {hostname}
 
 ## Curses
 - [ ] Use curses or perhaps a GUI

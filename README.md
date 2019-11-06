@@ -8,6 +8,10 @@ Automated Cisco 3702 configuration file generator and programmer
 * Sets a temporary IP address on BVI1
 * Uploads new firmware via tftp
 * Uploads generated config via tftp
+* Checks current status of 3702
+    * If already configured (prompts to over-write)
+    * If already autonomous
+    * If already firmware updated
 * Does a ping test
 * Whole thing is looped for easy batching
 
@@ -53,7 +57,14 @@ Automated Cisco 3702 configuration file generator and programmer
 10. Checks firmware version
 11. Checks configuration status
 12. Does whatever needs to be done at this point
+    1. Converts to autonomous if it isn't already
+    2. Uploads firmware if it isn't updated
+    3. Sets BVI interface with temp IP
+    4. Uploads config
+    5. Copies config to running-config
 13. Performs a ping test and checks if config actually loaded
+14. Writes to memory
+15. Starts again
 
 ## TODO
 See TODO

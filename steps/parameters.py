@@ -140,6 +140,7 @@ def wizard():
     while True:
         hostname, ips = ip.get()
         settings['hostname'] = hostname
+        print("Ensure the WGB ethernet is plugged into this PC")
         ip_addr = input("Type IP address that the WGB is connected to or (t) to try again: ")
         valid_ip = re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$",ip_addr)
         if ip_addr == 't':
@@ -218,9 +219,9 @@ def scanFiles():
     for (dirpath, dirnames, filenames) in os.walk(os.getcwd()):
         f.extend(filenames)
         break
-    for (dirpath, dirnames, filenames) in os.walk('config'):
+    for (dirpath, dirnames, filenames) in os.walk('template'):
         for filename in filenames:
-            f.append('config/{}'.format(filename))
+            f.append('template/{}'.format(filename))
         break
     
     for _file in f:
